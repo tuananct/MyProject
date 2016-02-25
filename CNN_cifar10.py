@@ -119,7 +119,7 @@ if __name__ == "__main__":
         
         print 'train mean loss = {}'.format(sum_loss/N)
         fp2.write("%d\t%f\n" % (epoch, sum_loss/N))
-        fp2.flush()
+        
         
         
         #Test evaluation
@@ -133,11 +133,15 @@ if __name__ == "__main__":
             sum_acc +=float(acc.data)*batchsize
         print 'test accuracy = %f' % (sum_acc/N_test)
         fp1.write("%d\t%f\n" % (epoch, sum_acc / N_test))
-        fp1.flush()
+        
         
         end_time = time.clock()
         print end_time - start_time
       	
+    fp1.write("End\n")
+    fp2.write("End\n")
+    fp1.flush()
+    fp2.flush()
     fp1.close()
     fp2.close()
     import cPickle
