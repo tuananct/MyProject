@@ -44,6 +44,7 @@ if __name__ == "__main__":
         cuda.check_cuda_available()
     xp = cuda.cupy if gpu_flag >= 0 else np
     
+    
     #初期設定
     batchsize = 100
     n_epoch = 50
@@ -68,6 +69,9 @@ if __name__ == "__main__":
         fc7=F.Linear(512, 256),
         fc8=F.Linear(256, 10)
         )
+    
+    if gpu_flag >= 0:
+    	model.
         
     def forward (x_data, y_data, train = True):
         x, t = chainer.Variable(x_data), chainer.Variable(y_data)
@@ -84,12 +88,12 @@ if __name__ == "__main__":
         	return F.softmax_cross_entropy(y, t)
         else:
         	return F.accuracy(y, t)  
+    model = cpickle.load(open(cifar10, 'rb'))
     if gpu_flag >= 0:
         cuda.get_device(gpu_flag).use()
-        model.to_gpu()
-        
+        model.to_gpu()    
     optimizer = optimizers.Adam()
-    optimizer.setup(model)
+    optimizer.setup(model.collect_parameters())
     
     fp1 = open("accuracy_CNN.txt", "w")
     fp2 = open("loss_CNN.txt", "w")
