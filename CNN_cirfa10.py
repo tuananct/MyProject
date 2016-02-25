@@ -10,6 +10,7 @@ import chainer.functions as F
 import chainer.links as L
 
 def unpickle(f):
+    import cPickle
     fo = open(f, 'rb')
     d = cPickle.load(fo)
     fo.close()
