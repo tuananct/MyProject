@@ -95,8 +95,8 @@ if __name__ == "__main__":
     optimizer = optimizers.Adam()
     optimizer.setup(model.collect_parameters())
     
-    fp1 = open("accuracy_CNN.txt", "w")
-    fp2 = open("loss_CNN.txt", "w")
+    fp1 = open("accuracy_CNN.txt", "a")
+    fp2 = open("loss_CNN.txt", "a")
     
     fp1.write("epoch\ttest_accuracy\n")
     fp2.write("epoch\ttrain_loss\n")
