@@ -12,25 +12,10 @@ try:
     import cPickle as pickle 
 except:
     import pickle
-
-def unpickle(f):
-    fo = open(f, 'rb')
-    d = cPickle.load(fo)
-    fo.close()
-    return d
-
-def view():
-    d = unpickle("cifar10/data_batch_1")
-    i=0
-    for key in d.iteritems():
-        i = i + 1
-    print i
-    data = d["data"]
-    labels = np.array (d["labels"])
     
-def line_count():
+def line_count(directory):
     os.chdir("/home/ubuntu/MyProject")
-    f = open('depth_data 0.txt', 'r')
+    f = open(directory, 'r')
     num_lines = sum(1 for line in f)
     return num_lines
 
@@ -47,7 +32,7 @@ def file_count():
 def arrayCreate(file_dir):
     os.chdir("/home/ubuntu/MyProject")
     f = open(file_dir, 'r')
-    num_lines = line_count()
+    num_lines = line_count(file_dir)
     x, y, z = [], [], []
     for i in range(0, num_lines - 150522):
         k = float(f.readline())
@@ -58,24 +43,43 @@ def arrayCreate(file_dir):
         z.append(k)
     merge = np.array(x + y +z) 
     return merge
-
+    
+def labelCreate():
+    os.chdir("/home/ubuntu/MyProject")
+    f = open('正解ラベル.txt', 'r')
+    labels = []
+    for i in range (0, line_count('正解ラベル.txt')):
+        a = int(f.readline())
+        labels.append(a)
+    print len(labels)
+    return labels
+    
 ##Create a n x 150528 dimensions array from
 #1 x 150258 dimensions arrayCreate()
 def dataCreate():
-    a = arrayCreate('depth_data 0.txt')
-    a = a.reshape(1,18)
-    print a.shape   
+    data = arrayCreate('depth_data 0.txt')
+    data = data.reshape(1,18)
+    print data.shape   
     for i in range (1,3):
         if (i % 4 != 0):
             print i
             file_dir = 'depth_data %d.txt' %(i)
-            b = arrayCreate(file_dir)
-            b = b.reshape(1,18)
-            a = np.concatenate((a,b))
-            print a.shape
-    return {'data': a}
-        
-data1 = dataCreate()
-data2 = pickle.dumps(data1)
-data3 = pickle.loads(data2)
-pprint.pprint(data3)
+            a = arrayCreate(file_dir)
+            a = a.reshape(1,18)
+            data = np.concatenate((data,a))
+            print data.shape
+    return data
+    
+def pickleCreate():           
+    data = {'data' : dataCreate(), 'labels' : labelCreate()}
+    output = open('final_task.pkl', 'wb')
+    pickle.dump(data1, output)
+    output.close()
+def loadData():
+    pkl_file = open('final_task.pkl', 'rb')
+    data = pickle.load(pkl_file)
+    pkl_file.close 
+    print data
+    
+pickleCreate()
+loadData()
