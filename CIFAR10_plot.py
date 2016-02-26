@@ -25,7 +25,7 @@ data = d["data"]
 labels = np.array(d["labels"])
 nsamples = len(data)
 
-print label_names
+print type(data)
 
 # 各クラスの画像をランダムに10枚抽出して描画
 nclasses = 10

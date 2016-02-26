@@ -6,9 +6,9 @@ import chainer
 from chainer import cuda, optimizers
 import chainer.functions as F
 import chainer.links as L
+import cPickle
 
 def unpickle(f):
-    import cPickle
     fo = open(f, 'rb')
     d = cPickle.load(fo)
     fo.close()
@@ -69,9 +69,6 @@ if __name__ == "__main__":
         fc7=F.Linear(512, 256),
         fc8=F.Linear(256, 10)
         )
-    
-    if gpu_flag >= 0:
-    	model.
         
     def forward (x_data, y_data, train = True):
         x, t = chainer.Variable(x_data), chainer.Variable(y_data)
@@ -88,7 +85,7 @@ if __name__ == "__main__":
         	return F.softmax_cross_entropy(y, t)
         else:
         	return F.accuracy(y, t)  
-    model = cpickle.load(open(cifar10, 'rb'))
+    model = cPickle.load(open("cifar10.pkl", 'rb'))
     if gpu_flag >= 0:
         cuda.get_device(gpu_flag).use()
         model.to_gpu()    
