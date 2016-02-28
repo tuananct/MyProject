@@ -41,14 +41,14 @@ def load_cifar10(datadir):
     return train_data, test_data, train_target, test_target
 
 if __name__ == "__main__":
-    gpu_flag = 0
+    gpu_flag = -1
 
     if gpu_flag >= 0:
         cuda.check_cuda_available()
     xp = cuda.cupy if gpu_flag >= 0 else np
 
-    batchsize = 100
-    n_epoch = 20
+    batchsize = 10
+    n_epoch = 2
 
     # CIFAR-10データをロード
     print "load CIFAR-10 dataset"
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         if train:
             return F.softmax_cross_entropy(y, t)
         else:
-            return F.accuracy(y, t)
+            return F.accuracy(y, t), y
 
     if gpu_flag >= 0:
         cuda.get_device(gpu_flag).use()
@@ -109,21 +109,26 @@ if __name__ == "__main__":
         fp2.write("%d\t%f\n" % (epoch, sum_loss / N))
         fp2.flush()
 
-        sum_accuracy = 0
+        """sum_accuracy = 0
         for i in range(0, N_test, batchsize):
             x_batch = xp.asarray(X_test[i:i + batchsize])
             y_batch = xp.asarray(y_test[i:i + batchsize])
 
-            acc = forward(x_batch, y_batch, train=False)
+            acc, pred = forward(x_batch, y_batch, train=False)
             sum_accuracy += float(acc.data) * len(y_batch)
 
         print "test accuracy: %f" % (sum_accuracy / N_test)
         fp1.write("%d\t%f\n" % (epoch, sum_accuracy / N_test))
         fp1.flush()
-
+        
         end_time = time.clock()
-        print end_time - start_time
-
+        print end_time - start_time"""
+    for idx in np.random.permutation(N_test)[:10]:
+        x_batch = xp.asarray(X_test[idx])
+        y_batch = xp.asarray(y_test[idx])
+        acc, pred = forward(x_batch, y_batch, train = False)
+        print y_batch, np.argmax(pred.data)
+        
     fp1.close()
     fp2.close()
 
