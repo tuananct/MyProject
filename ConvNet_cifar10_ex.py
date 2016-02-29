@@ -53,6 +53,7 @@ if __name__ == "__main__":
     # CIFAR-10データをロード
     print "load CIFAR-10 dataset"
     X_train, X_test, y_train, y_test = load_cifar10("cifar10")
+    print X_train.shape
 
     N = y_train.size
     N_test = y_test.size
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     X_train = X_train.reshape((len(X_train), 3, 32, 32))
     X_test = X_test.reshape((len(X_test), 3, 32, 32))
 
-    model = chainer.FunctionSet(conv1=F.Convolution2D(3, 32, 3, pad=0),
+    """model = chainer.FunctionSet(conv1=F.Convolution2D(3, 32, 3, pad=0),
                                 l1=F.Linear(7200, 512),
                                 l2=F.Linear(512, 10))
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
         fp2.write("%d\t%f\n" % (epoch, sum_loss / N))
         fp2.flush()
 
-        """sum_accuracy = 0
+        sum_accuracy = 0
         for i in range(0, 20, 10):
         	x_batch = xp.asarray(X_test[i: i + 10])
         	y_batch = xp.asarray(y_test[i: i + 10])
@@ -120,8 +121,8 @@ if __name__ == "__main__":
         	print "y_batch : ", 
         	print y_batch
         	print "acc ", 
-        	print acc"""
-        for idx in np.random.permutation(N)[:100]:
+        	print acc
+        for idx in range (0, 10):
         	xxx = xp.asarray(X_test[idx])
         	h = F.max_pooling_2d(F.relu(model.conv1(xxx)), 2)
         	h = F.dropout(F.relu(model.l1(h)), train=train)
@@ -134,15 +135,15 @@ if __name__ == "__main__":
     end_time = time.clock()
     print end_time - start_time
     
-    """for idx in range (0, 10):
+    for idx in range (0, 10):
     	x_batch = xp.asarray(X_test[idx])
         y_batch = xp.asarray(y_test[idx])
         acc, pred = forward(x_batch, y_batch, train = False)
-        print y_batch, np.argmax(pred.data)"""
+        print y_batch, np.argmax(pred.data)
         
     fp1.close()
     fp2.close()
 
     import cPickle
     model.to_cpu()
-    cPickle.dump(model, open("cifar10.pkl", "wb"), -1)
+    cPickle.dump(model, open("cifar10.pkl", "wb"), -1)"""
