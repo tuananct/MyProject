@@ -73,7 +73,7 @@ if __name__ == "__main__":
         if train:
             return F.softmax_cross_entropy(y, t)
         else:
-            return F.accuracy(y, t)
+            return y , F.accuracy(y, t)
 
     if gpu_flag >= 0:
         cuda.get_device(gpu_flag).use()
@@ -114,10 +114,11 @@ if __name__ == "__main__":
             x_batch = xp.asarray(X_test[i:i + batchsize])
             y_batch = xp.asarray(y_test[i:i + batchsize])
 
-            acc = forward(x_batch, y_batch, train=False)
+            result, acc = forward(x_batch, y_batch, train=False)
             sum_accuracy += float(acc.data) * len(y_batch)
-
+        print y_batch[0]
         print "test accuracy: %f" % (sum_accuracy / N_test)
+        print result.data[0]
         fp1.write("%d\t%f\n" % (epoch, sum_accuracy / N_test))
         fp1.flush()
 
