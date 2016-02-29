@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Feb 26 14:50:36 2016
-
-@author: ubuntu
-"""
 import os, os.path
 import numpy as np
 import matplotlib.pyplot as plt
@@ -12,77 +7,85 @@ try:
     import cPickle as pickle 
 except:
     import pickle
-    
-def line_count(directory):
-    os.chdir("/home/ubuntu/MyProject")
-    f = open(directory, 'r')
-    num_lines = sum(1 for line in f)
-    return num_lines
 
-def file_count():
-    directory = '/home/ubuntu/MyProject/FirstTestData'
-    number_of_files = sum(1 for item in
-                        os.listdir(directory)
-                        if os.path.isfile(os.path.join(directory, item)))
-    #print number_of_files - 4
-    return number_of_files
+class FinalTaskData():
     
-#Create an array from file in following order 
-#x-value, y-value, z-value of 1 image file
-def arrayCreate(file_dir):
-    os.chdir("/home/ubuntu/MyProject")
-    f = open(file_dir, 'r')
-    num_lines = line_count(file_dir)
-    x, y, z = [], [], []
-    for i in range(0, num_lines - 150522):
-        k = float(f.readline())
-        x.append(k)
-        k = float(f.readline())
-        y.append(k)
-        k = float(f.readline())
-        z.append(k)
-    merge = np.array(x + y +z) 
-    return merge
+    def __init__(self.directory):
+        #self.directory = u'/home/ubuntu/MyProject/FirstTestData'
+    self.file_dir = u'depth_data 0.txt'
+    self.dumb_train = u'final_task_train.pkl' 
+    self.dumb_test = u'final_task_test.pkl' 
+    self.num_files = 0
+    self.num_lines = 0
+    self.labels_train = []    
+    self.labels_test = []
+    self.merge_train = []
+    self.merge_test = []
+    self.data_train = {}
+    self.data_test = {}
     
-def labelCreate():
-    os.chdir("/home/ubuntu/MyProject")
-    f = open('正解ラベル.txt', 'r')
-    labels = []
-    for i in range (0, line_count('正解ラベル.txt')):
-        a = int(f.readline())
-        labels.append(a)
-    print len(labels)
-    return labels
+    def file_count(self.directory):
+        file_list = os.listdir(self.directory)
+        for file_name in file_list :
+            root, ext = os.path.splitext(file_name)
+            if ext == u'.txt':
+                self.num_files += 1               
+                #self.number_of_files = sum(1 for item in
+                        #os.listdir(self.directory)
+                        #if os.path.isfile(os.path.join(self.directory, item)))
+
+    def line_count(self):
+        f = open(self.directory + self.file_dir, 'r')
+        self.num_lines = sum(1 for line in f)
     
-##Create a n x 150528 dimensions array from
-#1 x 150258 dimensions arrayCreate()
-def dataCreate():
-    data_raw = arrayCreate('depth_data 0.txt')
-    data_raw = data_raw.reshape(1,18)
-    print data_raw.shape   
-    for i in range (1,3):
-        if (i % 4 != 0):
-           #print i
-            file_dir = 'depth_data %d.txt' %(i)
-            a = arrayCreate(file_dir)
-            a = a.reshape(1,18)
-            data_raw = np.concatenate((data_raw,a))
-            #print data_raw.shape
-    return data
+    #Create an array from file in following order 
+    #x-value, y-value, z-value of 1 image file
+    def arrayCreate(self):
+        #os.chdir("/home/ubuntu/MyProject")
+        f = open(self.directory + self.file_dir, 'r')
+        x, y, z = [], [], []
+        for i in range(0, self.num_lines - 150522):
+            x.append(float(f.readline()))
+            y.append(float(f.readline()))
+            z.append(float(f.readline()))
+            self.merge = np.array(x + y +z) 
     
-#Create pickle file from dict contained data and label    
-def pickleCreate():           
-    data_output = {'data' : dataCreate(), 'labels' : labelCreate()}
-    output = open('final_task.pkl', 'wb')
-    pickle.dump(data_output, output)
-    output.close()
+    def labelCreate(self):
+        #os.chdir("/home/ubuntu/MyProject")
+        self.file_dir = u'正解ラベル.txt'
+        f = open(self.directory + self.file_dir , 'r')
+        for i in range (0, self.num_lines):
+            for count in range (0,2)
+                self.labels_train.append(int(f.readline()))
+            self.labels_test.append (int(f.readline()))
+                
+    #Create a n x 150528 dimensions array from
+    #1 x 150258 dimensions arrayCreate()
+    def trainDataCreate(self):
+        #print data_raw.shape   
+        for i in range (0,self.num_files - 2):
+            if (i % 4 != 0):
+                #print i
+                self.file_dir = 'depth_data %d.txt' %(i)
+                a = arrayCreate(self.directory + self.file_dir)
+                a = a.reshape(1,self.num_lines)
+                self.merge_train = np.concatenateate((self.merge_train,a))
+                #print data_raw.shape
+            else:
+                self.file_dir = 'depth_data %d.txt' %(i)
+                a = arrayCreate(self.directory + self.file_dir)
+                a = a.reshape(1,self.num_lines)
+                self.merge_test = np.concatenateate((self.merge_test,a))
     
-#Load the dataset    
-def loadData():
-    pkl_file = open('final_task.pkl', 'rb')
-    data_load = pickle.load(pkl_file)
-    pkl_file.close 
-    return data_load
-    
-pickleCreate()
-loadData()
+    #Create pickle file from dict contained data and label    
+    def pickleCreate(self):         
+        self.data_train = {'data' : self.merge_train, 'labels' : self.labels_train}
+        self.data_test = {'data' : self.merge_test, 'labels' : self.labels_test}
+        pickle.dump(self.data_train, open(self.directory + self.dump_train , 'wb'), -1)
+        pickle.dump(self.data_test, open(self.directory + self.dump_test , 'wb'), -1)
+
+    #Load the dataset    
+    def loadData(self):
+        self.data_train = pickle.load(open(self.directory + self.dump_train, 'rb'))
+        self.data_test = pickle.load(open(self.directory + self.dump_test, 'rb'))
+        
