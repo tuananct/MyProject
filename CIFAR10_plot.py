@@ -24,23 +24,25 @@ d = unpickle("cifar10/data_batch_1")
 data = d["data"]
 labels = np.array(d["labels"])
 nsamples = len(data)
-
-print type(data)
+print data[0][1]
+data = data.reshape(10000, 3, 32, 32)
+print data.shape
+print data[0][0][1][1]
 
 # 各クラスの画像をランダムに10枚抽出して描画
-nclasses = 10
-pos = 1
-for i in range (10):
-    targets = np.where(labels == i)[0]
-    np.random.shuffle(targets)
-    
-    # 最初の10枚の画像を描画
-    for idx in targets[:10]:
-        plt.subplot(10, 10, pos)
-        img = data[idx]
-        # (channel, row, column) => (row, column, channel)
-        plt.imshow(img.reshape(3, 32, 32).transpose(1, 2, 0))
-        plt.axis('off')
-        label = label_names[i]
-        pos +=1
-plt.show()
+#nclasses = 10
+#pos = 1
+#for i in range (10):
+#    targets = np.where(labels == i)[0]
+#    np.random.shuffle(targets)
+#    
+#    # 最初の10枚の画像を描画
+#    for idx in targets[:10]:
+#        plt.subplot(10, 10, pos)
+#        img = data[idx]
+#        # (channel, row, column) => (row, column, channel)
+#        plt.imshow(img.reshape(3, 32, 32).transpose(1, 2, 0))
+#        plt.axis('off')
+#        label = label_names[i]
+#        pos +=1
+#plt.show()

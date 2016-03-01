@@ -57,12 +57,13 @@ if __name__ == "__main__":
 
     N = y_train.size
     N_test = y_test.size
-
+    print type(y_train)
+	
     # 画像を (nsample, channel, height, width) の4次元テンソルに変換
     X_train = X_train.reshape((len(X_train), 3, 32, 32))
     X_test = X_test.reshape((len(X_test), 3, 32, 32))
 
-    """model = chainer.FunctionSet(conv1=F.Convolution2D(3, 32, 3, pad=0),
+    model = chainer.FunctionSet(conv1=F.Convolution2D(3, 32, 3, pad=0),
                                 l1=F.Linear(7200, 512),
                                 l2=F.Linear(512, 10))
 
@@ -111,39 +112,38 @@ if __name__ == "__main__":
         fp2.flush()
 
         sum_accuracy = 0
-        for i in range(0, 20, 10):
-        	x_batch = xp.asarray(X_test[i: i + 10])
-        	y_batch = xp.asarray(y_test[i: i + 10])
-
-            
-        	acc, pred = forward(x_batch, y_batch, train=False)
-        	sum_accuracy += float(acc.data) * len(y_batch)
-        	print "y_batch : ", 
-        	print y_batch
-        	print "acc ", 
-        	print acc
-        for idx in range (0, 10):
-        	xxx = xp.asarray(X_test[idx])
-        	h = F.max_pooling_2d(F.relu(model.conv1(xxx)), 2)
-        	h = F.dropout(F.relu(model.l1(h)), train=train)
-        	y = F.model.l2(h)
-        	print np.argmax(y.data)
-        print "test accuracy: %f" % (sum_accuracy / N_test)
+        for i in range(0, N_test, batchsize):
+            x_batch = xp.asarray(X_test[i: i + 10])        
+            y_batch = xp.asarray(y_test[i: i + 10])
+            acc, pred = forward(x_batch, y_batch, train=False)
+            sum_accuracy += float(acc.data) * len(y_batch)
         fp1.write("%d\t%f\n" % (epoch, sum_accuracy / N_test))
         fp1.flush()
+         
+#        	print "y_batch : ", 
+#        	print y_batch
+#        	print "acc ", 
+#        	print acc
+#        for idx in range (0, 10):
+#        	xxx = xp.asarray(X_test[idx])
+#        	h = F.max_pooling_2d(F.relu(model.conv1(xxx)), 2)
+#        	h = F.dropout(F.relu(model.l1(h)), train=train)
+#        	y = F.model.l2(h)
+#        	print np.argmax(y.data)
+#        print "test accuracy: %f" % (sum_accuracy / N_test)
         
     end_time = time.clock()
     print end_time - start_time
     
-    for idx in range (0, 10):
-    	x_batch = xp.asarray(X_test[idx])
-        y_batch = xp.asarray(y_test[idx])
-        acc, pred = forward(x_batch, y_batch, train = False)
-        print y_batch, np.argmax(pred.data)
+#    for idx in range (0, 10):
+#    	x_batch = xp.asarray(X_test[idx])
+#        y_batch = xp.asarray(y_test[idx])
+#        acc, pred = forward(x_batch, y_batch, train = False)
+#        print y_batch, np.argmax(pred.data)
         
     fp1.close()
     fp2.close()
 
     import cPickle
     model.to_cpu()
-    cPickle.dump(model, open("cifar10.pkl", "wb"), -1)"""
+    cPickle.dump(model, open("cifar10.pkl", "wb"), -1)
