@@ -108,6 +108,7 @@ if __name__ == "__main__":
         print "train mean loss: %f" % (sum_loss / N)
         fp2.write("%d\t%f\n" % (epoch, sum_loss / N))
         fp2.flush()
+        fp2.close()
         
     model.to_cpu()
     cPickle.dump(model, open("FinalTask.pkl", "wb"), -1)
